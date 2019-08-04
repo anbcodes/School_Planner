@@ -1,28 +1,40 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app>
+      <v-layout>
+        <v-flex>
+          <v-btn icon @click="options.drawer = !options.drawer">
+            <v-icon>fas fa-list</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex>
+          <topbar v-model="week" />
+        </v-flex>
+        <v-spacer />
+      </v-layout>
+    </v-app-bar>
+    <v-content>
+      <sidebar v-model="options" />
+      <week :week="week" />
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Topbar from "./components/TopBar";
+import Sidebar from "./components/Sidebar";
+import Week from "./components/Week";
 
 export default {
-  name: 'app',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Topbar,
+    Sidebar,
+    Week
+  },
+  data: () => ({
+    week: Number(localStorage.getItem("selectedWeek")) || 1,
+    options: JSON.parse(localStorage.getItem("options")) || { drawer: false }
+  })
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
