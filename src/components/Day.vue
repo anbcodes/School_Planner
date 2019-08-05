@@ -19,7 +19,9 @@
           <v-icon>add</v-icon>
         </v-btn>
       </v-flex>
-      <v-flex>{{timeDone}}/{{totalTime}} Minutes Done (Time left {{totalTime-timeDone}}min)</v-flex>
+      <v-flex
+        v-if="totalTime > 0"
+      >{{timeDone}}/{{totalTime}} Minutes Done (Time left {{totalTime-timeDone}}min)</v-flex>
     </v-layout>
   </v-card>
 </template>
