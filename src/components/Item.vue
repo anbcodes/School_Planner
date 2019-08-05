@@ -25,7 +25,7 @@
         </v-flex>
         <v-flex>
           <v-checkbox
-            color="success"
+            color="white"
             :input-value="item.completed"
             @change="update({...item, completed:!item.completed})"
           />

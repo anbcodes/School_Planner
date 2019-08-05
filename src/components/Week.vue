@@ -1,15 +1,29 @@
 <template>
   <v-layout centered>
     <v-spacer />
+    <v-flex hidden-md-and-up>
+      <v-btn icon @click="showDayDown()">
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+    </v-flex>
     <template v-if="daysLoaded">
       <template v-for="index in 7">
-        <v-flex centered v-if="shownDays.includes(index-1)" :key="index-1">
+        <v-flex
+          centered
+          v-if="shownDays.includes(index-1) && !($vuetify.breakpoint.smAndDown && index-1 !== showDayMobile)"
+          :key="index-1"
+        >
           <day :day="index-1" :week="week" :dayId="days[index-1].id" />
         </v-flex>
       </template>
     </template>
     <v-flex v-if="!daysLoaded" ma-5 md12>
       <v-progress-linear indeterminate height="10"></v-progress-linear>
+    </v-flex>
+    <v-flex hidden-md-and-up>
+      <v-btn icon @click="showDayUp()">
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
     </v-flex>
     <v-spacer />
   </v-layout>
@@ -26,6 +40,7 @@ export default {
   created() {
     this.getShownDays();
     this.getDays();
+    this.getShowDayMobile();
     this.$bus.$on("localStorageUpdate", () => {
       this.getShownDays();
     });
@@ -38,7 +53,8 @@ export default {
   data: () => ({
     shownDays: [],
     days: [],
-    daysLoaded: false
+    daysLoaded: false,
+    showDayMobile: 0
   }),
   methods: {
     async getDays() {
@@ -68,7 +84,56 @@ export default {
           delete shownDays[dayToNumber[options.communityDay]];
         }
       }
+      shownDays = shownDays.filter(function(el) {
+        return el != null;
+      });
+      console.log(shownDays);
       this.shownDays = shownDays;
+      this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile);
+    },
+    getClosestShownDayUp(dayNumber) {
+      while (!this.shownDays.includes(dayNumber)) {
+        if (dayNumber > 5) {
+          dayNumber = -1;
+        }
+        dayNumber += 1;
+      }
+      return dayNumber;
+    },
+    getClosestShownDayDown(dayNumber) {
+      while (!this.shownDays.includes(dayNumber)) {
+        if (dayNumber < 0) {
+          dayNumber = 7;
+        }
+        dayNumber -= 1;
+      }
+      return dayNumber;
+    },
+    getShowDayMobile() {
+      let showDay = this.getClosestShownDayUp(1);
+
+      this.showDayMobile =
+        Number(localStorage.getItem("showDayMobile")) || showDay;
+    },
+    showDayUp() {
+      if (this.showDayMobile > this.shownDays[-1]) {
+        this.showDayMobile = this.getClosestShownDayUp(0);
+      } else {
+        this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile + 1);
+      }
+      localStorage.setItem("showDayMobile", this.showDayMobile);
+      console.log(this.showDayMobile);
+    },
+    showDayDown() {
+      if (this.showDayMobile <= this.shownDays[0]) {
+        this.showDayMobile = this.shownDays[-1];
+      } else {
+        this.showDayMobile = this.getClosestShownDayDown(
+          this.showDayMobile - 1
+        );
+      }
+      console.log(this.showDayMobile);
+      localStorage.setItem("showDayMobile", this.showDayMobile);
     }
   }
 };
