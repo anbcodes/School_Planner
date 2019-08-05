@@ -89,7 +89,6 @@ export default {
       shownDays = shownDays.filter(function(el) {
         return el != null;
       });
-      console.log(shownDays);
       this.shownDays = shownDays;
       this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile);
     },
@@ -124,7 +123,6 @@ export default {
         this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile + 1);
       }
       localStorage.setItem("showDayMobile", this.showDayMobile);
-      console.log(this.showDayMobile);
     },
     showDayDown() {
       if (this.showDayMobile <= this.shownDays[0]) {
@@ -134,7 +132,6 @@ export default {
           this.showDayMobile - 1
         );
       }
-      console.log(this.showDayMobile);
       localStorage.setItem("showDayMobile", this.showDayMobile);
     }
   }
