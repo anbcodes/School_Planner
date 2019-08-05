@@ -13,9 +13,14 @@
       v-model="createItemDialog"
       :item="{name: 'New Item', time: 30, color: 'red', day:dayId}"
     />
-    <v-btn icon @click="createItemDialog = true">
-      <v-icon>add</v-icon>
-    </v-btn>
+    <v-layout>
+      <v-flex>
+        <v-btn icon @click="createItemDialog = true">
+          <v-icon>add</v-icon>
+        </v-btn>
+      </v-flex>
+      <v-flex>{{timeDone}}/{{totalTime}} Minutes Done (Time left {{totalTime-timeDone}}min)</v-flex>
+    </v-layout>
   </v-card>
 </template>
 <script>
@@ -49,13 +54,28 @@ export default {
     ],
     itemsLoaded: false,
     items: [],
-    createItemDialog: false
+    createItemDialog: false,
+    timeDone: 0,
+    totalTime: 0
   }),
   methods: {
     async getItems() {
       this.items = await this.$db.getDays(this.week);
       this.items = this.items[this.day].items;
+      this.updateItemTotal();
       this.itemsLoaded = true;
+    },
+    updateItemTotal() {
+      let timeDone = 0;
+      let totalTime = 0;
+      this.items.forEach(item => {
+        if (item.completed) {
+          timeDone += item.time;
+        }
+        totalTime += item.time;
+      });
+      this.timeDone = timeDone;
+      this.totalTime = totalTime;
     }
   }
 };

@@ -2,6 +2,7 @@
   <v-layout centered>
     <v-spacer />
     <v-flex hidden-md-and-up>
+      <v-spacer />
       <v-btn icon @click="showDayDown()">
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
@@ -17,14 +18,15 @@
         </v-flex>
       </template>
     </template>
-    <v-flex v-if="!daysLoaded" ma-5 md12>
-      <v-progress-linear indeterminate height="10"></v-progress-linear>
-    </v-flex>
     <v-flex hidden-md-and-up>
       <v-btn icon @click="showDayUp()">
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-flex>
+    <v-flex v-if="!daysLoaded" ma-5 md12>
+      <v-progress-linear indeterminate height="10"></v-progress-linear>
+    </v-flex>
+
     <v-spacer />
   </v-layout>
 </template>
