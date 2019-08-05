@@ -7,7 +7,10 @@
     </v-flex>
     <v-spacer />
     <v-flex>
-      <v-toolbar-title class="headline">
+      <v-toolbar-title class="headline hidden-xs-only">
+        <span>{{expandedWeek}}</span>
+      </v-toolbar-title>
+      <v-toolbar-title class="subtilte-2 hidden-sm-and-up">
         <span>{{expandedWeek}}</span>
       </v-toolbar-title>
     </v-flex>
@@ -47,7 +50,11 @@ export default {
       let weekTo30 = ((this.value - 1) % 30) + 1;
       let weekTo15 = weekTo30 > 15 ? weekTo30 - 15 : weekTo30;
       let semester = weekTo30 > 15 ? 2 : 1;
-      return `Challenge ${challenge}, Week ${weekTo15}, Semester ${semester}`;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return `Chall. ${challenge}, Week ${weekTo15}, Sem. ${semester}`;
+      } else {
+        return `Challenge ${challenge}, Week ${weekTo15}, Semester ${semester}`;
+      }
     }
   }
 };
