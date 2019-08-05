@@ -126,7 +126,7 @@ export default {
     },
     showDayDown() {
       if (this.showDayMobile <= this.shownDays[0]) {
-        this.showDayMobile = this.shownDays[-1];
+        this.showDayMobile = this.shownDays[this.shownDays.length - 1];
       } else {
         this.showDayMobile = this.getClosestShownDayDown(
           this.showDayMobile - 1
