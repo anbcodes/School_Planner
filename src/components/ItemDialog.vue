@@ -57,8 +57,12 @@ export default {
     }
   },
   watch: {
-    item: function() {
-      this.itemToSave = { ...this.item } || {};
+    item: {
+      handler() {
+        this.itemToSave = { ...this.item };
+      },
+      deep: true,
+      immediate: true
     }
   }
 };
