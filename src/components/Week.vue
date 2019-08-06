@@ -8,13 +8,13 @@
       </v-btn>
     </v-flex>
     <template v-if="daysLoaded">
-      <template v-for="index in 7">
+      <template v-for="(value) in shownDays">
         <v-flex
           centered
-          v-if="shownDays.includes(index-1) && !($vuetify.breakpoint.smAndDown && index-1 !== showDayMobile)"
-          :key="index-1"
+          v-if="value[1] && !($vuetify.breakpoint.smAndDown && value[0] !== showDayMobile)"
+          :key="value[0]"
         >
-          <day :day="index-1" :week="week" :dayId="days[index-1].id" />
+          <day :day="value[0]" :week="week" :dayId="days[value[0]].id" />
         </v-flex>
       </template>
     </template>
@@ -54,6 +54,7 @@ export default {
   },
   data: () => ({
     shownDays: [],
+    shownDaysFiltered: [],
     days: [],
     daysLoaded: false,
     showDayMobile: 0
@@ -75,25 +76,43 @@ export default {
         Friday: 5,
         Saturday: 6
       };
-      let shownDays = [0, 1, 2, 3, 4, 5, 6];
+      let shownDays = [
+        [0, true],
+        [1, true],
+        [2, true],
+        [3, true],
+        [4, true],
+        [5, true],
+        [6, true]
+      ];
       let options = JSON.parse(localStorage.getItem("options"));
       if (options !== null) {
         if (!options.showWeekends) {
-          delete shownDays[6];
-          delete shownDays[0];
+          shownDays[6][1] = false;
+          shownDays[0][1] = false;
         }
         if (!options.showCommunityDay) {
-          delete shownDays[dayToNumber[options.communityDay]];
+          shownDays[dayToNumber[options.communityDay]][1] = false;
+        }
+        if (options.startWithCommunityDay && options.communityDay != null) {
+          let newArray = new Array(7);
+          let communityDayIndex = dayToNumber[options.communityDay];
+          let i = communityDayIndex;
+          for (let x = 0; x < 7; x++) {
+            newArray[x] = [...shownDays[i]];
+            i++;
+            if (i > 6) {
+              i = 0;
+            }
+          }
+          shownDays = newArray;
         }
       }
-      shownDays = shownDays.filter(function(el) {
-        return el != null;
-      });
       this.shownDays = shownDays;
       this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile);
     },
     getClosestShownDayUp(dayNumber) {
-      while (!this.shownDays.includes(dayNumber)) {
+      while (!this.shownDays[dayNumber][1]) {
         if (dayNumber > 5) {
           dayNumber = -1;
         }
@@ -102,7 +121,7 @@ export default {
       return dayNumber;
     },
     getClosestShownDayDown(dayNumber) {
-      while (!this.shownDays.includes(dayNumber)) {
+      while (!this.shownDays[dayNumber][1]) {
         if (dayNumber < 0) {
           dayNumber = 7;
         }
@@ -117,7 +136,7 @@ export default {
         Number(localStorage.getItem("showDayMobile")) || showDay;
     },
     showDayUp() {
-      if (this.showDayMobile > this.shownDays[-1]) {
+      if (this.showDayMobile > this.shownDays[-1][0]) {
         this.showDayMobile = this.getClosestShownDayUp(0);
       } else {
         this.showDayMobile = this.getClosestShownDayUp(this.showDayMobile + 1);
@@ -125,8 +144,8 @@ export default {
       localStorage.setItem("showDayMobile", this.showDayMobile);
     },
     showDayDown() {
-      if (this.showDayMobile <= this.shownDays[0]) {
-        this.showDayMobile = this.shownDays[this.shownDays.length - 1];
+      if (this.showDayMobile <= this.shownDays[0][0]) {
+        this.showDayMobile = this.shownDays[this.shownDays.length - 1][0];
       } else {
         this.showDayMobile = this.getClosestShownDayDown(
           this.showDayMobile - 1

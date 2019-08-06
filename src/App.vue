@@ -34,7 +34,12 @@ export default {
   },
   data: () => ({
     week: Number(localStorage.getItem("selectedWeek")) || 1,
-    options: JSON.parse(localStorage.getItem("options")) || { drawer: false }
+    options: JSON.parse(localStorage.getItem("options")) || {
+      drawer: false,
+      startWithCommunityDay: false,
+      showCommunityDay: true,
+      showWeekends: true
+    }
   })
 };
 </script>

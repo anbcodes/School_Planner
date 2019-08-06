@@ -28,6 +28,13 @@
           @change="update({...value, showCommunityDay:arguments[0]})"
         />
       </v-flex>
+      <v-flex offset-md1>
+        <v-checkbox
+          :input-value="value.startWithCommunityDay"
+          label="Start With Community Day"
+          @change="update({...value, startWithCommunityDay:arguments[0]})"
+        />
+      </v-flex>
     </v-layout>
   </v-navigation-drawer>
 </template>
