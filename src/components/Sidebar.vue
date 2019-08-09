@@ -57,7 +57,7 @@ export default {
   methods: {
     update(value) {
       localStorage.setItem("options", JSON.stringify(value));
-      this.$bus.$emit("localStorageUpdate", value);
+      this.$bus.$emit("localStorageUpdate");
       this.$emit("input", value);
     }
   }

@@ -32,13 +32,17 @@ export default {
     Sidebar,
     Week
   },
+  created() {
+    this.$dayHandler.addSetCallback(this.$set);
+  },
   data: () => ({
     week: Number(localStorage.getItem("selectedWeek")) || 1,
     options: JSON.parse(localStorage.getItem("options")) || {
       drawer: false,
       startWithCommunityDay: false,
       showCommunityDay: true,
-      showWeekends: true
+      showWeekends: true,
+      communityDay: "Monday"
     }
   })
 };
