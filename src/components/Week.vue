@@ -8,13 +8,13 @@
       </v-btn>
     </v-flex>
     <template v-if="daysLoaded">
-      <template v-for="(value, i) in $dayHandler.shownDays">
+      <template v-for="value in $dayHandler.shownDays">
         <v-flex
           centered
           v-if="value.show && !($vuetify.breakpoint.smAndDown && value.showMobile)"
-          :key="i"
+          :key="value.id"
+          mx-1
         >
-          {{console.log("Update")}}
           <day :day="value.day" :week="week" />
         </v-flex>
       </template>
@@ -63,8 +63,7 @@ export default {
     days: [],
     daysLoaded: false,
     showDayMobile: 0,
-    displayDays: [],
-    console: console
+    displayDays: []
   }),
   methods: {
     async getDays() {
