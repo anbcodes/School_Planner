@@ -1,9 +1,9 @@
 <template>
   <v-card>
-    <v-card-title primary-title>{{numToDay[day]}}</v-card-title>
+    <v-card-title primary-title>{{day.dayName}}</v-card-title>
     <template v-if="itemsLoaded">
       <template v-for="(item, index) in items">
-        <item :item="items[index]" :key="index" />
+        <item :item="items[index]" :key="index" :day="day" />
       </template>
     </template>
     <v-flex v-if="!itemsLoaded" ma-5 md12>
@@ -11,7 +11,7 @@
     </v-flex>
     <itemDialog
       v-model="createItemDialog"
-      :item="{name: 'New Item', time: 30, color: 'red', day:dayId}"
+      :item="{name: 'New Item', time: 30, color: 'red', day:day.id}"
     />
     <v-layout>
       <v-flex>
@@ -34,9 +34,8 @@ export default {
     ItemDialog
   },
   props: {
-    day: Number,
-    week: Number,
-    dayId: Number
+    day: Object,
+    week: Number
   },
   created() {
     this.getItems();
@@ -44,6 +43,13 @@ export default {
       this.getItems();
     });
   },
+  // render() {
+  //   this.getItems();
+  //   this.$bus.$on("dbItemUpdate", () => {
+  //     this.getItems();
+  //   });
+  //   return;
+  // },
   data: () => ({
     numToDay: [
       "Sunday",
@@ -62,9 +68,9 @@ export default {
   }),
   methods: {
     async getItems() {
-      this.items = await this.$db.getDays(this.week);
-      this.items = this.items[this.day].items;
+      this.items = await this.$db.getItems(this.day);
       this.updateItemTotal();
+      this.updateItemOrder();
       this.itemsLoaded = true;
     },
     updateItemTotal() {
@@ -72,12 +78,40 @@ export default {
       let totalTime = 0;
       this.items.forEach(item => {
         if (item.completed) {
-          timeDone += item.time;
+          timeDone += Number(item.time);
         }
-        totalTime += item.time;
+        totalTime += Number(item.time);
       });
       this.timeDone = timeDone;
       this.totalTime = totalTime;
+    },
+    updateItemOrder() {
+      if (!this.day.itemOrder) {
+        this.day.itemOrder = [];
+      }
+      this.items.forEach(item => {
+        if (!this.day.itemOrder.includes(item.id)) {
+          this.day.itemOrder.push(item.id);
+        }
+      });
+      let reorderedItems = [];
+      for (let x = 0; x < this.items.length; x++) {
+        reorderedItems.push(
+          this.items.filter(item => {
+            return this.day.itemOrder[x] === item.id;
+          })[0]
+        );
+      }
+      this.items = reorderedItems;
+    }
+  },
+  watch: {
+    day: {
+      handler() {
+        this.getItems();
+      },
+      immediate: true,
+      deep: true
     }
   }
 };

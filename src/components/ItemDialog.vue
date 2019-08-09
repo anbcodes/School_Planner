@@ -42,7 +42,8 @@
 export default {
   props: {
     value: Boolean,
-    item: Object
+    item: Object,
+    day: Object
   },
   data: () => ({
     itemToSave: {}
