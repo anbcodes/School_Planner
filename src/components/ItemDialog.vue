@@ -32,6 +32,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn v-if="!create" color="red darken-1" text @click="removeItem()">Delete</v-btn>
         <v-btn color="blue darken-1" text @click="close(false)">Cancel</v-btn>
         <v-btn color="blue darken-1" text @click="close(true)">Save</v-btn>
       </v-card-actions>
@@ -43,7 +44,8 @@ export default {
   props: {
     value: Boolean,
     item: Object,
-    day: Object
+    day: Object,
+    create: Boolean
   },
   data: () => ({
     itemToSave: {}
@@ -55,6 +57,17 @@ export default {
         await this.$db.putItem(this.itemToSave);
         this.$bus.$emit("dbItemUpdate");
       }
+    },
+    async removeItem() {
+      delete this.day.itemOrder[this.day.itemOrder.indexOf(this.item.id)];
+      this.day.itemOrder = this.removeEmpty(this.day.itemOrder);
+      await this.$db.removeItem(this.item);
+      this.close(false);
+      this.$bus.$emit("dbDayUpdate");
+      this.$bus.$emit("dbItemUpdate");
+    },
+    removeEmpty(array) {
+      return array.filter(v => v);
     }
   },
   watch: {

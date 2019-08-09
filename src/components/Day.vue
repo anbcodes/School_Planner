@@ -1,10 +1,31 @@
 <template>
   <v-card>
-    <v-card-title primary-title>{{day.dayName}}</v-card-title>
+    <v-card-title primary-title>
+      {{day.dayName}}
+      <v-flex shrink>
+        <v-btn icon @click="createItemDialog = true">
+          <v-icon>add</v-icon>
+        </v-btn>
+      </v-flex>
+    </v-card-title>
+    <v-flex v-if="totalTime > 0" mx-1>
+      <v-progress-linear
+        :value="timeDone/totalTime*100"
+        :color="items[0].color"
+        height="25"
+        reactive
+        rounded
+      >
+        <template v-slot="{ value }">
+          <strong>{{timeDone}}min done {{totalTime-timeDone}}min left</strong>
+        </template>
+      </v-progress-linear>
+    </v-flex>
+
     <template v-if="itemsLoaded">
-      <template v-for="(item, index) in items">
-        <item :item="items[index]" :key="index" :day="day" />
-      </template>
+      <v-flex v-for="item in items" :key="item.id" ma-1>
+        <item :item="item" :day="day" />
+      </v-flex>
     </template>
     <v-flex v-if="!itemsLoaded" ma-5 md12>
       <v-progress-linear indeterminate height="10"></v-progress-linear>
@@ -12,17 +33,9 @@
     <itemDialog
       v-model="createItemDialog"
       :item="{name: 'New Item', time: 30, color: 'red', day:day.id}"
+      :create="true"
+      :day="day"
     />
-    <v-layout>
-      <v-flex>
-        <v-btn icon @click="createItemDialog = true">
-          <v-icon>add</v-icon>
-        </v-btn>
-      </v-flex>
-      <v-flex
-        v-if="totalTime > 0"
-      >{{timeDone}}/{{totalTime}} Minutes Done (Time left {{totalTime-timeDone}}min)</v-flex>
-    </v-layout>
   </v-card>
 </template>
 <script>
@@ -43,13 +56,7 @@ export default {
       this.getItems();
     });
   },
-  // render() {
-  //   this.getItems();
-  //   this.$bus.$on("dbItemUpdate", () => {
-  //     this.getItems();
-  //   });
-  //   return;
-  // },
+
   data: () => ({
     numToDay: [
       "Sunday",
