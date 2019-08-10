@@ -1,29 +1,13 @@
 <template>
   <v-layout centered>
     <v-spacer />
-    <v-flex hidden-md-and-up>
-      <v-spacer />
-      <v-btn icon @click="$dayHandler.moveMobileShowDayDown()">
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-    </v-flex>
     <template v-if="daysLoaded">
       <template v-for="value in $dayHandler.shownDays">
-        <v-flex
-          centered
-          v-if="value.show && !($vuetify.breakpoint.smAndDown && value.showMobile)"
-          :key="value.id"
-          mx-1
-        >
+        <v-flex centered v-if="value.show" :key="value.id" mx-1>
           <day :day="value.day" :week="week" />
         </v-flex>
       </template>
     </template>
-    <v-flex hidden-md-and-up>
-      <v-btn icon @click="$dayHandler.moveMobileShowDayUp()">
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-flex>
     <v-flex v-if="!daysLoaded" ma-5 md12>
       <v-progress-linear indeterminate height="10"></v-progress-linear>
     </v-flex>
