@@ -73,37 +73,42 @@ export default {
         putOnlyUsedFonts: true
       });
       let pdf = [];
-      let days = await this.$db.getDays(this.week);
-      for (let x = 0; x < days.length; x++) {
-        let day = days[x];
+      for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+        let day = this.$dayHandler.shownDays[x].day;
         let items = await this.$db.getItems(day);
-        pdf.push({
-          text: day.dayName,
-          size: 20,
-          type: "bold",
-          indent: 0,
-          space: 1
-        });
-        for (let y = 0; y < items.length; y++) {
-          let item = items[y];
+        if (this.$dayHandler.shownDays[x].show) {
           pdf.push({
-            text: `${item.name} (${item.time}min)`,
-            size: 15,
+            text: day.dayName,
+            size: 20,
             type: "bold",
-            indent: 1,
-            space: 1
+            indent: 0,
+            space: 1,
+            align: "center"
           });
-          pdf.push({
-            text: `${item.notes}`,
-            size: 15,
-            type: "",
-            indent: 1.5,
-            space: 1
-          });
+          for (let y = 0; y < items.length; y++) {
+            let item = items[y];
+            pdf.push({
+              text: `${item.name} (${item.time}min)`,
+              size: 15,
+              type: "bold",
+              indent: 1,
+              space: 1
+            });
+            pdf.push({
+              text: `${item.notes}`,
+              size: 15,
+              type: "",
+              indent: 1.5,
+              space: 1
+            });
+          }
         }
       }
-      let downPage = 10;
 
+      let downPage = 40;
+      this.jsp.setFontSize(25);
+      this.jsp.setFontStyle("bold");
+      this.jsp.text(this.expandedWeek, 215.9 / 2, 10, { align: "center" });
       for (let x = 0; x < pdf.length; x++) {
         let pdfMultilinelen =
           pdf[x].text.split("\n").length > 0
@@ -117,8 +122,9 @@ export default {
         this.jsp.setFontStyle(pdf[x].type);
         this.jsp.text(
           pdf[x].text,
-          Math.floor(10 + 10 * pdf[x].indent),
-          downPage
+          pdf[x].align ? 215.9 / 2 : Math.floor(10 + 10 * pdf[x].indent),
+          downPage,
+          { align: pdf[x].align || "left" }
         );
         pdfMultilinelen =
           pdf[x].text.split("\n").length > 0
@@ -133,6 +139,20 @@ export default {
     },
     download() {
       this.jsp.output("save", "Challange Plan.pdf");
+    }
+  },
+  computed: {
+    expandedWeek() {
+      let challenges = ["A", "B", "1", "2", "3", "4"];
+      let challenge = challenges[Math.floor((this.week - 1) / 30)];
+      let weekTo30 = ((this.week - 1) % 30) + 1;
+      let weekTo15 = weekTo30 > 15 ? weekTo30 - 15 : weekTo30;
+      let semester = weekTo30 > 15 ? 2 : 1;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return `Chall. ${challenge}, Week ${weekTo15}, Sem. ${semester}`;
+      } else {
+        return `Challenge ${challenge}, Week ${weekTo15}, Semester ${semester}`;
+      }
     }
   }
 };
