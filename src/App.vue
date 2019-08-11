@@ -14,7 +14,7 @@
       </v-layout>
     </v-app-bar>
     <v-content>
-      <sidebar v-model="options" />
+      <sidebar v-model="options" :week="week" />
       <week :week="week" />
     </v-content>
   </v-app>
@@ -37,7 +37,10 @@ export default {
   },
   data: () => ({
     week: Number(localStorage.getItem("selectedWeek")) || 1,
-    options: JSON.parse(localStorage.getItem("options")) || {
+    options: {
+      ...JSON.parse(localStorage.getItem("options")),
+      drawer: false
+    } || {
       drawer: false,
       startWithCommunityDay: false,
       showCommunityDay: true,
