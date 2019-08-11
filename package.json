@@ -15,6 +15,7 @@
     "firebase": "^6.3.4",
     "firebaseui": "^4.1.0",
     "fontawesome": "^5.6.3",
+    "jspdf": "^1.5.3",
     "vue": "^2.6.10",
     "vuetify": "^2.0.0"
   },
