@@ -36,13 +36,12 @@
         />
       </v-flex>
       <v-flex offset-md1>
-        <v-btn @mouseenter="prepareDownload()" @click="download">Download</v-btn>
+        <v-btn @click="download">Print</v-btn>
       </v-flex>
     </v-layout>
   </v-navigation-drawer>
 </template>
 <script>
-import * as jsPDF from "jspdf";
 export default {
   props: {
     value: Object,
@@ -65,80 +64,36 @@ export default {
       this.$bus.$emit("localStorageUpdate");
       this.$emit("input", value);
     },
-    async prepareDownload() {
-      this.jsp = new jsPDF({
-        orientation: "p",
-        unit: "mm",
-        format: "letter",
-        putOnlyUsedFonts: true
-      });
-      let pdf = [];
+    async download() {
+      let pdf = document.createElement("div");
       for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
         let day = this.$dayHandler.shownDays[x].day;
         let items = await this.$db.getItems(day);
         if (this.$dayHandler.shownDays[x].show) {
-          pdf.push({
-            text: day.dayName,
-            size: 20,
-            type: "bold",
-            indent: 0,
-            space: 1,
-            align: "center"
-          });
+          let dayText = document.createElement("h2");
+          dayText.innerText = day.dayName;
+          dayText.align = "center";
+          pdf.appendChild(dayText);
           for (let y = 0; y < items.length; y++) {
             let item = items[y];
-            pdf.push({
-              text: `${item.name} (${item.time}min)`,
-              size: 15,
-              type: "bold",
-              indent: 1,
-              space: 1
-            });
-            pdf.push({
-              text: `${item.notes}`,
-              size: 15,
-              type: "",
-              indent: 1.5,
-              space: 1
-            });
+            let itemText = document.createElement("h3");
+            itemText.innerText = `${item.name} (${item.time}min)`;
+            itemText.align = "center";
+            pdf.appendChild(itemText);
+            let notes = document.createElement("div");
+            notes.innerHTML = item.notes;
+            pdf.appendChild(notes);
           }
         }
       }
-
-      let downPage = 40;
-      this.jsp.setFontSize(25);
-      this.jsp.setFontStyle("bold");
-      this.jsp.text(this.expandedWeek, 215.9 / 2, 10, { align: "center" });
-      for (let x = 0; x < pdf.length; x++) {
-        let pdfMultilinelen =
-          pdf[x].text.split("\n").length > 0
-            ? pdf[x].text.split("\n").length * pdf[x].size
-            : 0;
-        if (downPage > 280 - pdfMultilinelen) {
-          this.jsp.addPage();
-          downPage = 10;
-        }
-        this.jsp.setFontSize(pdf[x].size);
-        this.jsp.setFontStyle(pdf[x].type);
-        this.jsp.text(
-          pdf[x].text,
-          pdf[x].align ? 215.9 / 2 : Math.floor(10 + 10 * pdf[x].indent),
-          downPage,
-          { align: pdf[x].align || "left" }
-        );
-        pdfMultilinelen =
-          pdf[x].text.split("\n").length > 0
-            ? pdf[x].text.split("\n").length * pdf[x].size
-            : 0;
-        downPage += pdf[x + 1]
-          ? pdf[x + 1].space
-            ? Math.floor(pdf[x + 1].space / 1.5 + pdfMultilinelen)
-            : Math.floor(pdf[x + 1].size / 1.5 + pdfMultilinelen)
-          : 10;
-      }
-    },
-    download() {
-      this.jsp.output("save", "Challange Plan.pdf");
+      let pdfFrame = document.createElement("iframe");
+      pdfFrame.onload = () => {
+        pdfFrame.contentDocument.body.appendChild(pdf);
+        pdfFrame.contentWindow.focus();
+        pdfFrame.contentWindow.print();
+        pdfFrame.remove();
+      };
+      document.body.appendChild(pdfFrame);
     }
   },
   computed: {
