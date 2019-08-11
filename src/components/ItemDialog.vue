@@ -28,17 +28,7 @@
               ></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm12 md12>
-              <v-textarea
-                no-resize
-                label="Notes"
-                outlined
-                rounded
-                v-model="itemToSave.notes"
-                required
-                full-width
-                auto-grow
-                :rows="10"
-              ></v-textarea>
+              <editor v-model="itemToSave.notes" />
             </v-flex>
           </v-layout>
         </v-container>
@@ -53,7 +43,12 @@
   </v-dialog>
 </template>
 <script>
+import Editor from "./Editor";
+
 export default {
+  components: {
+    Editor
+  },
   props: {
     value: Boolean,
     item: Object,
