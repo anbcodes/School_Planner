@@ -1,17 +1,27 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-layout>
-        <v-flex>
-          <v-btn icon @click="options.drawer = !options.drawer">
-            <v-icon>fas fa-list</v-icon>
-          </v-btn>
-        </v-flex>
-        <v-flex>
-          <topbar v-model="week" />
-        </v-flex>
-        <v-spacer />
-      </v-layout>
+      <v-row>
+        <v-col mt-5>
+          <v-row>
+            <v-btn icon @click="options.drawer = !options.drawer">
+              <v-icon>fas fa-list</v-icon>
+            </v-btn>
+          </v-row>
+        </v-col>
+        <v-col mt-3>
+          <v-row>
+            <topbar v-model="week" />
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-row justify="end">
+            <v-btn icon @click="clear">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-app-bar>
     <v-content>
       <sidebar v-model="options" :week="week" />
@@ -47,6 +57,28 @@ export default {
       showWeekends: true,
       communityDay: "Monday"
     }
-  })
+  }),
+  methods: {
+    async clear() {
+      if (
+        confirm(
+          "You are clearing all the items for this week. Click ok to continue."
+        )
+      ) {
+        for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+          let day = this.$dayHandler.shownDays[x].day;
+          let items = await this.$db.getItems(day);
+          for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            this.$db.removeItem(item);
+          }
+          for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+            await this.$db.removeDay(this.$dayHandler.shownDays[x].day);
+          }
+        }
+        this.$bus.$emit("dbUpdate");
+      }
+    }
+  }
 };
 </script>

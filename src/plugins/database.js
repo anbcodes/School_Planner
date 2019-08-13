@@ -32,6 +32,10 @@ export default class DataBase {
     this.db.days.put(day)
   }
 
+  async removeDay(day) {
+    this.db.days.delete(day.id)
+  }
+
   async putItem(item) {
     this.db.items.put(item)
   }
