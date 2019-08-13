@@ -51,9 +51,11 @@ export default {
     week: Number
   },
   created() {
-    if (!localStorage.getItem("tutorialDone")) {
+    if (!localStorage.getItem("tutorialDonePlanner")) {
       if (confirm("Would you like the tutorial?")) {
         this.showTutorial();
+      } else {
+        localStorage.setItem("tutorialDonePlanner", "true");
       }
     }
   },
@@ -117,7 +119,7 @@ export default {
       document.body.appendChild(pdfFrame);
     },
     async showTutorial() {
-      localStorage.setItem("tutorialDone", "true");
+      localStorage.setItem("tutorialDonePlanner", "true");
       let tutorialItems = [
         {
           name: "When you are done click the X to erase this week",
