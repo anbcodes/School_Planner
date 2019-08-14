@@ -21,8 +21,8 @@ export default {
       item.name = comItem[0]
       item.time = parseInt(comItem[1], 36)
       item.dayOfWeek = this.dayNameToNum[comItem[2]]
-      item.color = this.colorToNum[comItem[3]]
-      item.notes = this.colorToNum[comItem[4]]
+      item.color = this.colorToNum[parseInt(comItem[3], 36)]
+      item.notes = comItem[4]
       items.push(item)
     })
     return items
