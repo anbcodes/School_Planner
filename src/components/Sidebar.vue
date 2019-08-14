@@ -41,10 +41,18 @@
       <v-flex offset-md1 mt-2>
         <v-btn @click="showTutorial">Tutorial</v-btn>
       </v-flex>
+      <v-flex offset-md1 mt-2>
+        <v-btn @click="copyId">Copy week id</v-btn>
+      </v-flex>
+      <v-flex offset-md1 mt-2>
+        <v-btn @click="enterId">Enter week id</v-btn>
+      </v-flex>
     </v-layout>
   </v-navigation-drawer>
 </template>
 <script>
+import lz from "lz-string";
+import compresser from "../plugins/compresser";
 export default {
   props: {
     value: Object,
@@ -187,6 +195,7 @@ export default {
           day: 1
         }
       ];
+      this.$dayHandler.addDays(await this.$db.getDays(this.week));
       for (let x = 0; x < tutorialItems.length; x++) {
         let item = tutorialItems[x];
         item.day = this.$dayHandler.shownDays[item.day].day.id;
@@ -195,6 +204,66 @@ export default {
 
       this.$bus.$emit("dbItemUpdate");
       this.$bus.$emit("dbDayUpdate");
+    },
+    async enterId() {
+      let id = prompt("Id");
+      if (!id) {
+        return;
+      }
+      await this.clear();
+      let dataObject = compresser.decompress(
+        JSON.parse(lz.decompressFromEncodedURIComponent(id))
+      );
+      for (let x = 0; x < dataObject.length; x++) {
+        dataObject[x].day = this.$dayHandler.getDayFromNameFromWeek(
+          dataObject[x].dayOfWeek
+        ).id;
+        delete dataObject[x].id;
+        await this.$db.putItem(dataObject[x]);
+      }
+      this.$bus.$emit("dbItemUpdate");
+      this.$bus.$emit("dbDayUpdate");
+    },
+    async copyId() {
+      let idContainer = document.createElement("input");
+      idContainer.type = "text";
+      let items = await this.$db.getItemsFromWeek(this.week);
+      let days = await this.$db.getDays(this.week);
+      for (let x = 0; x < items.length; x++) {
+        items[x].dayOfWeek = days.filter(v => v.id === items[x].day)[0].dayName;
+      }
+      idContainer.value = lz.compressToEncodedURIComponent(
+        JSON.stringify(compresser.compress(items))
+      );
+      document.body.appendChild(idContainer);
+      // eslint-disable-next-line
+      console.log("ID", idContainer.value);
+      idContainer.select();
+      document.execCommand("copy");
+      idContainer.remove();
+      idContainer.type = "hidden";
+      alert("Id copied to clipboard");
+    },
+    async clear() {
+      if (
+        confirm(
+          "You are clearing all the items for this week. Click ok to continue."
+        )
+      ) {
+        for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+          let day = this.$dayHandler.shownDays[x].day;
+          let items = await this.$db.getItems(day);
+          for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            this.$db.removeItem(item);
+          }
+          // for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+
+          //   await this.$db.removeDay(this.$dayHandler.shownDays[x].day);
+          // }
+        }
+        this.$bus.$emit("dbUpdate");
+      }
     }
   },
   computed: {

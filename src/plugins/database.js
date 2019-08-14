@@ -17,10 +17,13 @@ export default class DataBase {
   async getDays(week) {
     let days = await this.db.days.where({ week: week }).toArray()
     let toPut = []
-    if (days.length != 7) {
+    if (days.length === 0) {
+      console.log("DAYS.length === 0 generating more days", days, week)
+      this.db.days.bulkDelete(days.map((v) => v.id))
       for (let x = 0; x < 7; x++) {
         toPut.push({ week: week, dayName: this.dayOfWeek[x], itemOrder: [] })
       }
+      console.log("TO PUT", toPut)
       await this.db.days.bulkPut(toPut)
     }
     days = await this.db.days.where({ week: week }).toArray()
@@ -33,6 +36,7 @@ export default class DataBase {
   }
 
   async removeDay(day) {
+    console.log(day);
     this.db.days.delete(day.id)
   }
 
@@ -46,6 +50,15 @@ export default class DataBase {
 
   async getItems(day) {
     let items = await this.db.items.where({ day: day.id }).toArray()
+    return items
+
+  }
+  async getItemsFromWeek(week) {
+    let days = await this.db.days.where({ week: week }).toArray()
+    let items = []
+    for (let x = 0; x < days.length; x++) {
+      Array.prototype.push.apply(items, await this.db.items.where({ day: days[x].id }).toArray())
+    }
     return items
 
   }

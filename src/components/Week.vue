@@ -27,7 +27,7 @@ export default {
   },
   created() {
     this.getDays();
-    this.$bus.$on("localStorageUpdate", () => {
+    this.$bus.$on("localStorageUpdate", async () => {
       this.$dayHandler.onOptionsUpdate();
       this.$forceUpdate();
     });
