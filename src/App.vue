@@ -72,9 +72,9 @@ export default {
             let item = items[i];
             this.$db.removeItem(item);
           }
-          for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
-            await this.$db.removeDay(this.$dayHandler.shownDays[x].day);
-          }
+          // for (let x = 0; x < this.$dayHandler.shownDays.length; x++) {
+          //   await this.$db.removeDay(this.$dayHandler.shownDays[x].day);
+          // }
         }
         this.$bus.$emit("dbUpdate");
       }
