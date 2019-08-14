@@ -1,20 +1,22 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-row>
-        <v-col mt-5>
+      <v-row no-gutters>
+        <v-col mt-5 cols="1">
           <v-row>
             <v-btn icon @click="options.drawer = !options.drawer">
               <v-icon>fas fa-list</v-icon>
             </v-btn>
           </v-row>
         </v-col>
-        <v-col mt-3>
+        <v-spacer />
+        <v-col mt-3 cols="8">
           <v-row>
             <topbar v-model="week" />
           </v-row>
         </v-col>
-        <v-col>
+        <v-spacer />
+        <v-col cols="1">
           <v-row justify="end">
             <v-btn icon @click="clear">
               <v-icon>close</v-icon>

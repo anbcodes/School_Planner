@@ -1,21 +1,23 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col cols="1">
       <v-btn icon @click="downWeek()">
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
     </v-col>
     <v-spacer />
-    <v-col mt-2>
-      <v-toolbar-title class="headline hidden-xs-only">
-        <span>{{expandedWeek}}</span>
-      </v-toolbar-title>
-      <v-toolbar-title class="subtilte-2 hidden-sm-and-up">
-        <span>{{expandedWeek}}</span>
-      </v-toolbar-title>
+    <v-col mt-2 cols="8">
+      <v-row justify="center">
+        <v-toolbar-title class="headline hidden-xs-only">
+          <span>{{expandedWeek}}</span>
+        </v-toolbar-title>
+        <v-toolbar-title class="subtilte-2 hidden-sm-and-up">
+          <span>{{expandedWeek}}</span>
+        </v-toolbar-title>
+      </v-row>
     </v-col>
     <v-spacer />
-    <v-col>
+    <v-col cols="1">
       <v-btn icon @click="upWeek()">
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
