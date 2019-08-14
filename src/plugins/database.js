@@ -18,12 +18,10 @@ export default class DataBase {
     let days = await this.db.days.where({ week: week }).toArray()
     let toPut = []
     if (days.length === 0) {
-      console.log("DAYS.length === 0 generating more days", days, week)
       this.db.days.bulkDelete(days.map((v) => v.id))
       for (let x = 0; x < 7; x++) {
         toPut.push({ week: week, dayName: this.dayOfWeek[x], itemOrder: [] })
       }
-      console.log("TO PUT", toPut)
       await this.db.days.bulkPut(toPut)
     }
     days = await this.db.days.where({ week: week }).toArray()
@@ -36,7 +34,6 @@ export default class DataBase {
   }
 
   async removeDay(day) {
-    console.log(day);
     this.db.days.delete(day.id)
   }
 
