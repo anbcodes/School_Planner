@@ -17,7 +17,7 @@
         rounded
       >
         <template v-slot="{ value }">
-          <strong>{{timeDone}}min done {{totalTime-timeDone}}min left</strong>
+          <strong>{{timeMessage}}</strong>
         </template>
       </v-progress-linear>
     </v-flex>
@@ -119,6 +119,12 @@ export default {
       },
       immediate: true,
       deep: true
+    }
+  },
+  computed: {
+    timeMessage() {
+      let left = totalTime-timeDone
+      return `${Math.floor(totalTime / 60)}hr ${Math.floor(totalTime % 60)}min done. ${Math.floor(left / 60)}hr ${Math.floor(left % 60)}min left`
     }
   }
 };

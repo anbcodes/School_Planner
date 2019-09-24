@@ -42,7 +42,7 @@
               <div :class="`font-weight-bold subtitle-2 ${item.color}--text text--lighten-5`">
                 {{item.name}}
                 <br />
-                {{item.time}} Minutes
+                {{timeMessage}}
               </div>
             </v-flex>
           </v-layout>
@@ -129,6 +129,11 @@ export default {
     },
     removeEmpty(array) {
       return array.filter(v => v);
+    }
+  },
+  computed: {
+    timeMessage() {
+      return `${Math.floor(item.time / 60)}hour${Math.floor(item.time / 60) > 1 ? 's' : ''} ${Math.floor(item.time % 60)}minute${Math.floor(item.time % 60) > 1 ? 's' : ''}. `
     }
   }
 };
