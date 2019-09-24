@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     timeMessage() {
-      return `${Math.floor(item.time / 60)}hour${Math.floor(item.time / 60) > 1 ? 's' : ''} ${Math.floor(item.time % 60)}minute${Math.floor(item.time % 60) > 1 ? 's' : ''}. `
+      return `${Math.floor(this.item.time / 60)} hour${Math.floor(this.item.time / 60) === 1 ? '' : 's'} ${this.item.time % 60} minute${this.item.time % 60 === 1 ? '' : 's'}. `
     }
   }
 };

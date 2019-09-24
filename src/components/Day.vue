@@ -123,8 +123,8 @@ export default {
   },
   computed: {
     timeMessage() {
-      let left = totalTime-timeDone
-      return `${Math.floor(totalTime / 60)}hr ${Math.floor(totalTime % 60)}min done. ${Math.floor(left / 60)}hr ${Math.floor(left % 60)}min left`
+      let left = this.totalTime-this.timeDone
+      return `${Math.floor(this.timeDone / 60)}hr ${this.timeDone % 60}min done. ${Math.floor(left / 60)}hr ${left % 60}min left`
     }
   }
 };
