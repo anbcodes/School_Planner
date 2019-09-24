@@ -6,7 +6,7 @@ export default {
     items.forEach((item) => {
       let comItem = new Array(5)
       comItem[0] = item.name
-      comItem[1] = item.time.toString(36)
+      comItem[1] = Number(item.time).toString(36)
       comItem[2] = this.dayNameToNum.indexOf(item.dayOfWeek)
       comItem[3] = this.colorToNum.indexOf(item.color).toString(36)
       comItem[4] = item.notes
