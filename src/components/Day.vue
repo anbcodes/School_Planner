@@ -102,13 +102,16 @@ export default {
         }
       });
       let reorderedItems = [];
-      for (let x = 0; x < this.items.length; x++) {
-        reorderedItems.push(
-          this.items.filter(item => {
-            return this.day.itemOrder[x] === item.id;
-          })[0]
-        );
-      }
+      this.items.sort((a, b) => {
+        return this.day.itemOrder.indexOf(a) - this.day.itemOrder.indexOf(b)
+      })
+      // for (let x = 0; x < this.items.length; x++) {
+      //   reorderedItems.push(
+      //     this.items.filter(item => {
+      //       return this.day.itemOrder[x] === item.id;
+      //     })[0]
+      //   );
+      // }
       this.items = reorderedItems;
     }
   },
