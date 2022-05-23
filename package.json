@@ -11,7 +11,7 @@
   "dependencies": {
     "@mdi/js": "^3.8.95",
     "core-js": "^2.6.5",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "firebase": "^6.3.4",
     "firebaseui": "^4.1.0",
     "fontawesome": "^5.6.3",
